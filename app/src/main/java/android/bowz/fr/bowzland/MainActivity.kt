@@ -14,7 +14,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
@@ -123,7 +122,6 @@ class MainActivity : AppCompatActivity() {
 
             val type = intent.type
             if (mimeTextPlain == type) {
-                makeToast("j'ai trouvé un tag en text plain !!!")
                 val tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG) as Tag
                 NdefReaderTask().execute(tag)
 
@@ -154,6 +152,7 @@ class MainActivity : AppCompatActivity() {
     private inner class NdefReaderTask : AsyncTask<Tag, Void, String>() {
 
         override fun doInBackground(vararg params: Tag): String? {
+            deBug("doInBackground")
             val tag = params[0]
 
             val ndef = Ndef.get(tag)
@@ -206,13 +205,13 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: String?) {
             if (result != null) {
-                makeToast("J'ai trouvé une String gros !!!!!")
+                deBug("J'ai trouvé une String gros !!!!!")
                 textView.text = "Read content: $result"
             }
         }
     }
 
-    fun makeToast(text : String){
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+    fun deBug(text : String){
+        Log.d("monDebug",text)
     }
 }

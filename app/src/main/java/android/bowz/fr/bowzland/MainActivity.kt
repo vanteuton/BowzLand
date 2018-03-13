@@ -25,21 +25,16 @@ class MainActivity : AppCompatActivity() {
 
     private val mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
     private val mimeTextPlain = "text/plain"
+    private val TAG = "NfcDemo"
     private val textView = textView_explanation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-
-
-        val TAG = "NfcDemo"
-
-
         if (mNfcAdapter == null) {
             // Stop here, we definitely need NFC
-            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show()
             finish()
             return
         }
@@ -110,7 +105,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * @param activity The corresponding [BaseActivity] requesting to stop the foreground dispatch.
+     * @param activity The corresponding [MainActivity] requesting to stop the foreground dispatch.
      * @param adapter The [NfcAdapter] used for the foreground dispatch.
      */
     fun stopForegroundDispatch(activity: Activity, adapter: NfcAdapter) {
@@ -122,13 +117,13 @@ class MainActivity : AppCompatActivity() {
         if (NfcAdapter.ACTION_NDEF_DISCOVERED == action) {
 
             val type = intent.type
-            if (mimeTextPlain.equals(type)) {
+            if (mimeTextPlain == type) {
 
                 val tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG) as Tag
                 NdefReaderTask().execute(tag)
 
             } else {
-                Log.d("debug", "Wrong mime type: $type")
+                Log.d(TAG, "Wrong mime type: $type")
             }
         } else if (NfcAdapter.ACTION_TECH_DISCOVERED == action) {
 

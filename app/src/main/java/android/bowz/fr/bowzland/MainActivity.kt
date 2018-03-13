@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.UnsupportedEncodingException
 import java.util.*
@@ -203,8 +204,21 @@ class MainActivity : AppCompatActivity() {
         @SuppressLint("SetTextI18n")
         override fun onPostExecute(result: String?) {
             if (result != null) {
+                when(result){
+                    "cuisine" -> cuisineAction()
+                    "chambre" -> chambreAction()
+                    else -> Toast.makeText(this@MainActivity,"Hein ?",Toast.LENGTH_LONG).show()
+                }
                 textView.text = "LA ! La ! LAAAAA ! MOI J'AI TROUVEEEEE -> $result"
             }
+        }
+
+        fun cuisineAction(){
+            Toast.makeText(this@MainActivity,"TU ES DANS LA CUISIIIIIIIIIINE",Toast.LENGTH_LONG).show()
+        }
+
+        fun chambreAction(){
+            Toast.makeText(this@MainActivity,"Bonne nuit :3",Toast.LENGTH_LONG).show()
         }
     }
 

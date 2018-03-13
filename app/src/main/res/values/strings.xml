@@ -16,4 +16,6 @@
         \nSetup un reveil (musique + café + lumières)
         
     </string>
+    <string name="explanation">culculcul</string>
+    <string name="NFC_disabled">NFC is disabled.</string>
 </resources>

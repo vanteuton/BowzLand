@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity() {
 
             val type = intent.type
             if (mimeTextPlain == type) {
-
+                makeToast("j'ai trouvé un tag en text plain !!!")
                 val tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG) as Tag
                 NdefReaderTask().execute(tag)
 
@@ -205,7 +205,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(result: String?) {
-            if (result != null) textView.text = "Read content: $result"
+            if (result != null) {
+                makeToast("J'ai trouvé une String gros !!!!!")
+                textView.text = "Read content: $result"
+            }
         }
+    }
+
+    fun makeToast(text : String){
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
     }
 }

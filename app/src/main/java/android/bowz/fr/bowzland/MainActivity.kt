@@ -14,6 +14,8 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.UnsupportedEncodingException
@@ -23,14 +25,17 @@ import kotlin.experimental.and
 
 class MainActivity : AppCompatActivity() {
 
-    private val mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
+    lateinit var mNfcAdapter : NfcAdapter
     private val mimeTextPlain = "text/plain"
     private val TAG = "NfcDemo"
-    private val textView = textView_explanation
+    lateinit var textView : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        textView = textView_explanation
 
         if (mNfcAdapter == null) {
             // Stop here, we definitely need NFC

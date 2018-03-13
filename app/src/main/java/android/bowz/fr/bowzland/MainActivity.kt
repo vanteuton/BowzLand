@@ -1,8 +1,8 @@
 package android.bowz.fr.bowzland
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.PendingIntent
-import android.content.ContentValues
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.IntentFilter.MalformedMimeTypeException
@@ -15,7 +15,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.TextView
-import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.UnsupportedEncodingException
 import java.util.*
@@ -24,10 +23,10 @@ import kotlin.experimental.and
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var mNfcAdapter : NfcAdapter
+    private lateinit var mNfcAdapter: NfcAdapter
     private val mimeTextPlain = "text/plain"
-    private val TAG = "NfcDemo"
-    lateinit var textView : TextView
+    private val tag = "NfcDemo"
+    lateinit var textView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +34,6 @@ class MainActivity : AppCompatActivity() {
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
         textView = textView_explanation
-
-        if (mNfcAdapter == null) {
-            // Stop here, we definitely need NFC
-            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show()
-            finish()
-            return
-        }
 
         if (!mNfcAdapter.isEnabled) {
             textView.text = getString(R.string.NFC_disabled)
@@ -126,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                 NdefReaderTask().execute(tag)
 
             } else {
-                Log.d(TAG, "Wrong mime type: $type")
+                Log.d(tag, "Wrong mime type: $type")
             }
         } else if (NfcAdapter.ACTION_TECH_DISCOVERED == action) {
 
@@ -149,10 +141,10 @@ class MainActivity : AppCompatActivity() {
      *
      * @author Ralf Wondratschek
      */
+    @SuppressLint("StaticFieldLeak")
     private inner class NdefReaderTask : AsyncTask<Tag, Void, String>() {
 
         override fun doInBackground(vararg params: Tag): String? {
-            deBug("doInBackground")
             val tag = params[0]
 
             val ndef = Ndef.get(tag)
@@ -162,12 +154,13 @@ class MainActivity : AppCompatActivity() {
             val ndefMessage = ndef.cachedNdefMessage
 
             val records = ndefMessage.records
+
             for (ndefRecord in records) {
                 if (ndefRecord.tnf == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.type, NdefRecord.RTD_TEXT)) {
                     try {
                         return readText(ndefRecord)
                     } catch (e: UnsupportedEncodingException) {
-                        Log.e(ContentValues.TAG, "Unsupported Encoding", e)
+                        deBug("Unsupported Encoding")
                     }
 
                 }
@@ -191,7 +184,11 @@ class MainActivity : AppCompatActivity() {
             val payload = record.payload
 
             // Get the Text Encoding
-            val textEncoding = if ((payload[0] and 128.toByte()) == 0.toByte()){ Charsets.UTF_8 }else {Charsets.UTF_16}
+            val textEncoding = if ((payload[0] and 128.toByte()) == 0.toByte()) {
+                Charsets.UTF_8
+            } else {
+                Charsets.UTF_16
+            }
 
             // Get the Language Code
             val languageCodeLength = payload[0] and 51
@@ -203,15 +200,15 @@ class MainActivity : AppCompatActivity() {
             return String(payload, languageCodeLength + 1, payload.size - languageCodeLength - 1, textEncoding)
         }
 
+        @SuppressLint("SetTextI18n")
         override fun onPostExecute(result: String?) {
             if (result != null) {
-                deBug("J'ai trouvé une String gros !!!!!")
-                textView.text = "Read content: $result"
+                textView.text = "LA ! La ! LAAAAA ! MOI J'AI TROUVEEEEE -> $result"
             }
         }
     }
 
-    fun deBug(text : String){
-        Log.d("monDebug",text)
+    fun deBug(text: String) {
+        Log.d("monDebug", text)
     }
 }

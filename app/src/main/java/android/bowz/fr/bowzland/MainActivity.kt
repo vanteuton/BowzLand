@@ -16,7 +16,14 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.UnsupportedEncodingException
 import java.util.*
 import kotlin.experimental.and
@@ -28,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private val mimeTextPlain = "text/plain"
     private val tag = "NfcDemo"
     lateinit var textView: TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +82,31 @@ class MainActivity : AppCompatActivity() {
          */
         handleIntent(intent)
     }
+
+    fun changeState(lightNumber : Int, state : Boolean){
+        val hueTrofitInterface = HueTrofitInterface.create()
+        val gson = Gson()
+
+        var callback = object : Callback<Array<HueResult>>{
+            override fun onFailure(call: Call<Array<HueResult>>?, t: Throwable?) {
+                Toast.makeText(this@MainActivity,"Erreur d'accès à la lampe",Toast.LENGTH_LONG).show()
+                Log.d("OkHttpError",t.toString())
+            }
+
+            override fun onResponse(call: Call<Array<HueResult>>?, response: Response<Array<HueResult>>?) {
+                Toast.makeText(this@MainActivity,"Lumière modifiée -> ${response?.body()}",Toast.LENGTH_LONG).show()
+            }
+        }
+
+        var data = when(state){
+            true -> HueRequest(true)
+            false -> HueRequest(false)
+        }
+        val changeCall = hueTrofitInterface.changeState(lightNumber,data)
+        changeCall.enqueue(callback)
+    }
+
+
 
     /**
      * @param activity The corresponding {@link Activity} requesting the foreground dispatch.
@@ -206,7 +239,7 @@ class MainActivity : AppCompatActivity() {
             if (result != null) {
                 when(result){
                     "cuisine" -> cuisineAction()
-                    "chambre" -> chambreAction()
+                    "entree" -> chambreAction()
                     else -> Toast.makeText(this@MainActivity,"Hein ?",Toast.LENGTH_LONG).show()
                 }
                 textView.text = "LA ! La ! LAAAAA ! MOI J'AI TROUVEEEEE -> $result"
@@ -215,10 +248,12 @@ class MainActivity : AppCompatActivity() {
 
         fun cuisineAction(){
             Toast.makeText(this@MainActivity,"TU ES DANS LA CUISIIIIIIIIIINE",Toast.LENGTH_LONG).show()
+            changeState(8,true)
         }
 
         fun chambreAction(){
-            Toast.makeText(this@MainActivity,"Bonne nuit :3",Toast.LENGTH_LONG).show()
+            Toast.makeText(this@MainActivity,"Welcome home",Toast.LENGTH_LONG).show()
+            changeState(13,true)
         }
     }
 

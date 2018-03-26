@@ -31,6 +31,8 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        <service android:name=".MyService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

@@ -1,37 +1,44 @@
 package android.bowz.fr.bowzland
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.PendingIntent
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.IntentFilter.MalformedMimeTypeException
-import android.nfc.NdefRecord
-import android.nfc.NfcAdapter
-import android.nfc.Tag
-import android.nfc.tech.Ndef
-import android.os.AsyncTask
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
-import android.widget.TextView
-import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_main.*
-import java.io.UnsupportedEncodingException
-import java.util.*
-import kotlin.experimental.and
+import kotlinx.android.synthetic.main.activity_main_settings.*
 
 
 class MainSettingsActivity : AppCompatActivity() {
 
 
-    //TODO : Ajouter un Job Scheduler qui vérifiera ma position toutes les 5 minutes.
+    //TODO : Je suis pas bien sur que j'appelle mon service de job schedulation :'/
     
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_settings)
 
+        val mJobScheduler = (getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler)
+        val builder = JobInfo.Builder(1, ComponentName(packageName, MyService::class.java.name))
+        builder.setPeriodic( 3000 )
+        buttonScheduleJob.setOnClickListener {
+            when(mJobScheduler.schedule(builder.build())){
+                JobScheduler.RESULT_FAILURE -> {
+                    buttonScheduleJob.setBackgroundColor(Color.RED)
+                    buttonScheduleJob.text = "Erreur"
+                    buttonScheduleJob.isEnabled = false
+                }
+                JobScheduler.RESULT_SUCCESS -> {
+                    buttonScheduleJob.text = "annuler les jobs"
+                    buttonScheduleJob.setOnClickListener {
+                        mJobScheduler.cancelAll()
+                        buttonScheduleJob.text = "relancer le job"
+                    }
+                }
+            }
+        }
     }
 
 }

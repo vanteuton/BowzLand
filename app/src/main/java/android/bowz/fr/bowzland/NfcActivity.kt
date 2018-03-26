@@ -67,11 +67,10 @@ class NfcActivity : Activity() {
         handleIntent(intent)
     }
 
-    fun changeState(lightNumber : Int, state : Boolean){
+    fun roomState(roomNumber : Int, state : Boolean){
         val hueTrofitInterface = HueTrofitInterface.create()
-        val gson = Gson()
 
-        var callback = object : Callback<Array<HueResult>> {
+        val callback = object : Callback<Array<HueResult>> {
             override fun onFailure(call: Call<Array<HueResult>>?, t: Throwable?) {
                 Toast.makeText(this@NfcActivity,"Erreur d'accès à la lampe",Toast.LENGTH_LONG).show()
                 Log.d("OkHttpError",t.toString())
@@ -82,14 +81,13 @@ class NfcActivity : Activity() {
             }
         }
 
-        var data = when(state){
+        val data = when(state){
             true -> HueRequest(true)
             false -> HueRequest(false)
         }
-        val changeCall = hueTrofitInterface.changeState(lightNumber,data)
+        val changeCall = hueTrofitInterface.roomState(roomNumber,data)
         changeCall.enqueue(callback)
     }
-
 
 
     /**
@@ -233,18 +231,22 @@ class NfcActivity : Activity() {
 
         fun cuisineAction() {
             Toast.makeText(this@NfcActivity, "TU ES DANS LA CUISIIIIIIIIIINE", Toast.LENGTH_LONG).show()
+            roomState(1,true)
         }
 
         fun chambreAction() {
             Toast.makeText(this@NfcActivity, "Bonne nuit :3", Toast.LENGTH_LONG).show()
+            roomState(1,true)
         }
 
         fun travailAction() {
             Toast.makeText(this@NfcActivity, "Aller courage mon gars", Toast.LENGTH_LONG).show()
+            roomState(1,true)
         }
     }
 
     fun deBug(text: String) {
         Log.d("monDebug", text)
     }
+
 }

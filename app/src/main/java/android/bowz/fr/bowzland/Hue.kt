@@ -22,7 +22,7 @@ interface HueTrofitInterface {
     fun singleLightState(@Path("lightNumber") lightNumber : Int, @Body json : HueRequest) : Call<Array<HueResult>>
 
 
-    @PUT("/api/NVUnYtbjgMZU4enxV569fKf5i0XB07F1O8Dwcwj9/rooms/{roomNumber}/state/")
+    @PUT("/api/NVUnYtbjgMZU4enxV569fKf5i0XB07F1O8Dwcwj9/groups/{roomNumber}/state/")
     fun roomState(@Path("roomNumber") roomNumber : Int, @Body json : HueRequest) : Call<Array<HueResult>>
 
     companion object Factory {
@@ -36,7 +36,7 @@ interface HueTrofitInterface {
             }.build()
 
             val retrofit = Retrofit.Builder()
-                    .baseUrl("http://192.168.1.16")
+                    .baseUrl("http://192.168.1.15")
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
                     .build()

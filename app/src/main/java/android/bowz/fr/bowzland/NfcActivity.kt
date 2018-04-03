@@ -199,7 +199,10 @@ class NfcActivity : Activity() {
                         speakerState(cuisine,false)
                         speakerState(salon,false)
                     }
-                    "cuisine" -> roomState(cuisine, true)
+                    "cuisine" -> {
+                        roomState(cuisine, true)
+                        toogleSpeakers(cuisine)
+                    }
                     "travail" -> {
                         roomState(chambre, false)
                         roomState(salon,false)
@@ -219,6 +222,16 @@ class NfcActivity : Activity() {
 
     fun computerState(running : Boolean){
         //TODO("trouver un moyen d'allumer et d'éteindre le pc... en passant par l'API sur le raspberry ?)
+//        java WakeOnLan <broadcast-ip> <mac-address>
+//        GENRE ça
+        when(running){
+            true -> WakeOnLan.main(arrayOf("192.168.1.1","AA:AA:AA:AA:AA"))
+            false -> getRaspiDoingStuff()
+        }
+    }
+
+    fun getRaspiDoingStuff(){
+        TODO("ecrire les scripts qui font les mm trucs")
     }
 
     fun speakerState(room : Int,running : Boolean){

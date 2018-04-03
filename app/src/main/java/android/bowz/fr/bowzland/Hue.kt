@@ -12,7 +12,7 @@ import retrofit2.http.Path
 
 data class Hue(val error : String,val success : String)
 
-//todo si ça plante avec la hueRequest pour roomState il faut changer l'endroit où on tape dans l'api
+//todo créer une Raspiterface
 class HueRequest internal constructor( internal val on: Boolean)
 
 

@@ -45,3 +45,32 @@ interface HueTrofitInterface {
     }
 
 }
+
+
+interface RaspberryTerface {
+
+    @PUT("/api/")
+    fun singleLightState(@Body json : HueRequest) : Call<Array<HueResult>>
+
+
+    companion object Factory {
+        fun create(): RaspberryTerface {
+            val interceptor : HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+                this.level = HttpLoggingInterceptor.Level.BODY
+            }
+
+            val client : OkHttpClient = OkHttpClient.Builder().apply {
+                this.addInterceptor(interceptor)
+            }.build()
+
+            val retrofit = Retrofit.Builder()
+                    .baseUrl("http://192.168.1.255")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
+                    .build()
+            return retrofit.create(RaspberryTerface::class.java)
+        }
+    }
+
+}
+

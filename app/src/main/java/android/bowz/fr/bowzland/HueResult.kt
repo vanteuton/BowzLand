@@ -12,6 +12,14 @@ class HueResult {
 
 }
 
+class RaspiResult {
+
+    @SerializedName("success")
+    @Expose
+    var success: Success? = null
+
+}
+
 class Error {
     @SerializedName("type")
     @Expose

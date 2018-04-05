@@ -16,6 +16,9 @@ data class Hue(val error : String,val success : String)
 class HueRequest internal constructor( internal val on: Boolean)
 
 
+class raspiRequest internal constructor( internal val on: Boolean)
+
+
 interface HueTrofitInterface {
 
     @PUT("/api/NVUnYtbjgMZU4enxV569fKf5i0XB07F1O8Dwcwj9/lights/{lightNumber}/state/")
@@ -49,8 +52,8 @@ interface HueTrofitInterface {
 
 interface RaspberryTerface {
 
-    @PUT("/api/")
-    fun singleLightState(@Body json : HueRequest) : Call<Array<HueResult>>
+    @PUT("/api/speakrs/{speakerNumber}/")
+    fun speakerState(@Path("speakerNumber") speakerNumber : Int,@Body json : raspiRequest) : Call<RaspiResult>
 
 
     companion object Factory {
@@ -64,7 +67,7 @@ interface RaspberryTerface {
             }.build()
 
             val retrofit = Retrofit.Builder()
-                    .baseUrl("http://192.168.1.255")
+                    .baseUrl("http://192.168.1.25")
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
                     .build()

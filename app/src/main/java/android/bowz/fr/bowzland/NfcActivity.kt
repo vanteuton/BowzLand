@@ -3,6 +3,7 @@ package android.bowz.fr.bowzland
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
@@ -12,7 +13,6 @@ import android.nfc.Tag
 import android.nfc.tech.Ndef
 import android.os.AsyncTask
 import android.os.Bundle
-import android.preference.Preference
 import android.util.Log
 import android.widget.Toast
 import retrofit2.Call
@@ -20,7 +20,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.UnsupportedEncodingException
 import java.util.*
-import java.util.prefs.Preferences
 import kotlin.experimental.and
 
 class NfcActivity : Activity() {
@@ -32,10 +31,15 @@ class NfcActivity : Activity() {
     val cuisine = 2
     val entree = 4
     val chambre = 3
+    var speakerCuisineState = false
+    var lightCuisineState = false
+    private lateinit var sharedPref : SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.nfc_activity)
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
+        lightCuisineState = sharedPref.getBoolean("lightCuisineState",false)
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
         handleIntent(intent)
         finish()
@@ -81,11 +85,7 @@ class NfcActivity : Activity() {
                 Toast.makeText(this@NfcActivity, "Lumière modifiée -> ${response?.body()}", Toast.LENGTH_LONG).show()
             }
         }
-        val data = when (state) {
-            true -> HueRequest(true)
-            false -> HueRequest(false)
-        }
-        val changeCall = hueTrofitInterface.roomState(roomNumber, data)
+        val changeCall = hueTrofitInterface.roomState(roomNumber, HueRequest(state))
         changeCall.enqueue(callback)
     }
 
@@ -201,7 +201,7 @@ class NfcActivity : Activity() {
                     }
                     "cuisine" -> {
                         roomState(cuisine, true)
-                        toogleSpeakers(cuisine)
+                        toogleCuisineSpeakers()
                     }
                     "travail" -> {
                         roomState(chambre, false)
@@ -235,11 +235,27 @@ class NfcActivity : Activity() {
     }
 
     fun speakerState(room : Int,running : Boolean){
-        //TODO("trouver un moyen d'allumer et d'éteindre les enceintes... en passant par l'API sur le raspberry ?)
+        val raspberryTerface = RaspberryTerface.create()
+        val callback = object : Callback<RaspiResult> {
+            override fun onFailure(call: Call<RaspiResult>?, t: Throwable?) {
+                Toast.makeText(this@NfcActivity, "Erreur de SpeakerState", Toast.LENGTH_LONG).show()
+                Log.d("OkHttpError", t.toString())
+            }
+
+            override fun onResponse(call: Call<RaspiResult>?, response: Response<RaspiResult>?) {
+                Toast.makeText(this@NfcActivity, "Enceinte atteinte -> ${response?.body()}", Toast.LENGTH_LONG).show()
+            }
+        }
+        val changeCall = raspberryTerface.speakerState(room,raspiRequest(running))
+        changeCall.enqueue(callback)
+        //TODO("codé mais pas testé")
     }
 
-    fun toogleSpeakers(room: Int){
-//        TODO("lire les prefs pour voir où en sont les enceintes et appeler speakerState en fonction")
+    fun toogleCuisineSpeakers(){
+        speakerCuisineState = sharedPref.getBoolean("speakerCuisineState",false)
+        speakerState(cuisine,!speakerCuisineState)
+        sharedPref.edit().putBoolean("speakerCuisineState",!speakerCuisineState)
+//        TODO("codé pas testé")
     }
 
     fun deBug(text: String) {

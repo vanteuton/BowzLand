@@ -18,6 +18,10 @@ class RaspiResult {
     @Expose
     var success: Success? = null
 
+    @SerializedName("error")
+    @Expose
+    var error: Error? = null
+
 }
 
 class Error {

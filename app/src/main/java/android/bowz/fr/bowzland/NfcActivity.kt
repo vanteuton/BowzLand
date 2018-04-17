@@ -254,7 +254,7 @@ class NfcActivity : Activity() {
     fun toogleCuisineSpeakers(){
         speakerCuisineState = sharedPref.getBoolean("speakerCuisineState",false)
         speakerState(cuisine,!speakerCuisineState)
-        sharedPref.edit().putBoolean("speakerCuisineState",!speakerCuisineState)
+        sharedPref.edit().putBoolean("speakerCuisineState",!speakerCuisineState).apply()
 //        TODO("codé pas testé")
     }
 

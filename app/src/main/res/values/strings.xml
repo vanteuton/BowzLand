@@ -1,21 +1,5 @@
 <resources>
     <string name="app_name">BowzLand</string>
-    <string name="text">Todo :
-        \nAllumer le nfc quand je suis chez moi ou dans un safe spot et l\'éteindre quand je m\'en vais.
-        \nAllumer les lumières dans la cuisine si je pose le nfc dessus.
-        \néteindre si je pose sur le nfc de la cuisine.
-        \nAllumer un service qui upload les photos et sauvegardes en local quand je
-    détecte mon wifi.
-        \nAllume mon wifi quand j\'arrive dans une certaine zone géographique.
-        \nAllume mon pc quand je rentre chez moi
-        \néteins les lumières et mon pc quand je pars de chez moi.
-        \nPermettre de choisir le disque en local, le réseau wifi et la localisation géographique
-        \nAllumer/éteindre le wifi dans certains endroits.
-        \nPasser Spotify de mon tel à mon raspberry
-        \nAllumer les devices qd je rentre
-        \nSetup un reveil (musique + café + lumières)
-        
-    </string>
-    <string name="explanation">Rien à se mettre sous le scan mongars...</string>
+    <string name="BowzLand">Welcome to BowzLand !</string>
     <string name="NFC_disabled">NFC is disabled.</string>
 </resources>

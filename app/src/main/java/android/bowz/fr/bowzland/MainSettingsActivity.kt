@@ -22,7 +22,7 @@ class MainSettingsActivity : AppCompatActivity() {
 
         val mJobScheduler = (getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler)
         val builder = JobInfo.Builder(1, ComponentName(packageName, MyService::class.java.name))
-        builder.setPeriodic( 3000 )
+        builder.setPeriodic( 300 )
         buttonScheduleJob.setOnClickListener {
             when(mJobScheduler.schedule(builder.build())){
                 JobScheduler.RESULT_FAILURE -> {
